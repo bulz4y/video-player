@@ -36,11 +36,12 @@
       bottom: 0;
       opacity: 1;
       width: 100%;
-      padding: 10px;
+      padding: 0px 10px 10px 10px;
       -webkit-transition: all .4s ease;
       -o-transition: all .4s ease;
       transition: all .4s ease;
       color: #fff;
+      background: rgba(0, 0, 0, .8);
   }
   
   .controls .under-controls {
