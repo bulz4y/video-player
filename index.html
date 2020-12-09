@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Video Player</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div class="video-player">
+        <div class="error">Please Choose A Valid Video (MP4 or WEBM).</div>
+        <div class="play-btn"><i class="fas fa-play"></i></div>
+        <video class="player">
+            <source id='source' src="" type="">
+            <track id="subtitles" kind="subtitles" default>
+        </video>
+        <div class="controls">
+            <div class="timer">
+                <input type="range"  value=0 step=0.01 min=0 max=100  id='timer-progress'>
+            </div>
+
+            <div class="under-controls">
+                <div class="left">
+                    <div class="reset control hover tooltip">
+                        <div class="tooltip-text">Replay</div>
+                        <i class="fas fa-redo-alt"></i>
+                    </div>
+                    <div class="rewind control hover tooltip">
+                        <div class="tooltip-text">Rewind</div>
+                        <i class="fas fa-backward"></i>
+                    </div>
+                    <div class="play control hover tooltip">
+                        <div class="tooltip-text">Play</div>
+                        <i class="fas fa-play"></i>
+                    </div>
+                    <div class="forward control hover tooltip">
+                        <div class="tooltip-text">Forward</div>
+                        <i class="fas fa-forward"></i>
+                    </div>
+                    
+                
+                   
+              
+                    
+                    <div class="volume">
+                        <div class="mute control hover tooltip">
+                            <div class="tooltip-text">Mute</div>
+                            <i class="fas fa-volume-up"></i>
+                        </div>
+                     
+                        <div class="control">
+                            <input type="range"id='volume' min=0 max=1 value=0.5 step=0.01>
+                        </div>
+                        
+                    </div>
+                    <div class="time">-00:00</div>
+                </div>
+
+                <div class="right">
+                    <div class="settings control hover tooltip">
+                        <div class="tooltip-text">Settings</div>
+                        <i class="fas fa-cog"></i>
+                    </div>
+
+
+                    <div class="settings-container">
+                        <div class="main-menu">
+                        
+                            <div class='ctrl captions'>
+                                Captions 
+                              
+                                <div>
+                                    <span class="current-caption">Off</span>
+                                    <span class="fas fa-caret-right"></span>
+                                </div>
+                            </div>
+                    
+                            <div class='ctrl speed'>
+                                Speed 
+                                
+                                <div>
+                                    <span class="current-speed">Normal</span>
+                                    <span class="fas fa-caret-right"></span>
+                                </div>
+                                    
+                                
+                            </div>
+                       
+                        </div>
+
+                        <div class="captions-menu">
+                            <div class="heading back-captions">
+                                <h4><i class="fas fa-caret-left"></i> Captions</h4>
+                            </div>
+                            <div class="ctrl active off">Off</div>
+                            <div class='sub'></div>
+                            <div class="ctrl captions">
+                                Choose Captions
+                                <input type="file" hidden id='caption-file'>
+                            </div>
+                        </div>
+
+                        <div class="speed-menu">
+                            <div class="heading back-speed">
+                                <h4> <i class="fas fa-caret-left"></i> Speed</h4>
+                            </div>
+                            <div class="speed">
+                                <p class='ctrl' data-value=0.25>0.25</p>
+                                <p class='ctrl' data-value=0.5>0.5</p>
+                                <p class='ctrl' data-value=0.75>0.75</p>
+                                <p class='ctrl active' data-value=1>Normal</p>
+                                <p class='ctrl' data-value=1.25>1.25</p>
+                                <p class='ctrl' data-value=1.5>1.50</p>
+                                <p class='ctrl' data-value=1.75>1.75</p>
+                                <p class='ctrl' data-value=2>2</p>
+                            </div>
+                            
+                        </div>
+                    </div>
+               
+                    <div class="new-video control hover tooltip">
+                        <div class="tooltip-text">Add Video</div>
+                        <i class="fas fa-file-alt"></i>
+
+                        <input type="file" id='file' hidden>
+                    </div>
+                    <div class="fullscreen control hover tooltip">
+                        <div class="tooltip-text">Enter Fullscreen</div>
+                        <i class="fas fa-expand-alt"></i>
+                    </div>
+                </div>
+               
+
+  
+                  
+            </div>
+         
+
+        </div>
+    </div>
+
+    <script src="./player.js"></script>
+</body>
+</html>
