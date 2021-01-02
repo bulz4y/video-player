@@ -10,10 +10,9 @@
 </head>
 <body>
     <div class="video-player">
-        <div class="error">Please Choose A Valid Video (MP4 or WEBM).</div>
+        <div class="error">Please Choose A Valid Video (MP4 WEBM or M3U8).</div>
         <div class="play-btn"><i class="fas fa-play"></i></div>
         <video class="player">
-            <source id='source' src="" type="">
             <track id="subtitles" kind="subtitles" default>
         </video>
         <div class="controls">
@@ -119,13 +118,20 @@
                             
                         </div>
                     </div>
-               
-                    <div class="new-video control hover tooltip">
-                        <div class="tooltip-text">Add Video</div>
-                        <i class="fas fa-file-alt"></i>
 
-                        <input type="file" id='file' hidden>
+                    <div class="new-video-url control hover tooltip">
+                        <div class="tooltip-text">Add Url</div>
+                        <i class="fas fa-link"></i>
                     </div>
+
+                        <div class="new-video control hover tooltip">
+                            <div class="tooltip-text">Add Video</div>
+                            <i class="fas fa-file-alt"></i>
+    
+                            <input type="file" id='file' hidden>
+                        </div>
+
+                  
                     <div class="fullscreen control hover tooltip">
                         <div class="tooltip-text">Enter Fullscreen</div>
                         <i class="fas fa-expand-alt"></i>
@@ -141,6 +147,7 @@
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
     <script src="./player.js"></script>
 </body>
 </html>

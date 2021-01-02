@@ -2,10 +2,6 @@
     class Player {
         constructor(media) {
             this.media = media;
-           
-
-      
-
             this.initialize();
             
         }
@@ -16,6 +12,7 @@
 
             // Track
             this.track = document.querySelector('#subtitles');
+
 
             // Controls Container
             this.controls = document.querySelector('.video-player .controls');
@@ -32,9 +29,9 @@
             this.newFile = document.querySelector('.new-video');
             this.fullscreen = document.querySelector('.fullscreen');
             this.playBtn = document.querySelector('.play-btn');
+            this.videoUrl = document.querySelector('.new-video-url');
     
             this.file = document.getElementById('file');
-            this.source = document.getElementById('source');
 
 
             // Tooltips
@@ -86,15 +83,16 @@
          
             // Error
             this.error = document.querySelector('.error');
+            this.errorTimeout = null;
     
             // Current State
             this.currentVol = this.volume.value;
             this.muted = false;
     
-            this.paused = this.media.paused;
             this.playable = false;
             this.currentSrc = this.media.currentSrc;
             this.currentTrackSrc = '';
+            this.hls = false;
     
             this.media.volume = this.currentVol;
     
@@ -193,6 +191,12 @@
 
             // Ended Video Event
             this.media.addEventListener('ended', this.videoEnded.bind(this));
+            this.media.addEventListener('playing', () => {
+                this.playBtn.style.opacity = 0;
+                this.playBtn.style.visibility = 'hidden';
+                this.setIcon(this.playIcon, 'fas fa-pause');
+                
+            });
     
             // Play Pause event
             this.play.addEventListener('click', this.playMedia.bind(this));
@@ -222,7 +226,9 @@
             // Add Video
             this.newFile.addEventListener('click', this.addNewFile.bind(this));    
             this.file.addEventListener('input', this.loadFile.bind(this));
-    
+            
+            this.videoUrl.addEventListener('click', this.addVideoThroughURL.bind(this));
+              
     
     
             // Fullscreen Event
@@ -231,11 +237,9 @@
     
             // Media Time Update event
             this.media.addEventListener('loadedmetadata', () => {
+                    this.playable = true;    
                     this.updateMediaProgress();
-                    this.media.addEventListener('timeupdate', this.updateMediaProgress.bind(this));
-
-                    
-
+                    this.media.addEventListener('timeupdate', this.updateMediaProgress.bind(this)); 
             });
     
     
@@ -245,19 +249,25 @@
     
             this.timerProgress.addEventListener('mousedown', () => {
                 if(!this.playable) return;
-    
-                this.media.pause();
-                this.setIcon(this.playIcon, 'fas fa-play');
                 
+    
+                
+                if(!this.media.paused && !this.hls) {
+                    this.media.pause();
+                }
+
+                this.setIcon(this.playIcon, 'fas fa-play');
+                    
+
             });
     
             this.timerProgress.addEventListener('mouseup', () => {
                 if(!this.playable) return;
-    
-                if(!this.paused){
+                
+                if(this.media.paused) {
                     this.media.play();
-                    this.setIcon(this.playIcon, 'fas fa-pause');
                 }
+                
                 
             });
 
@@ -462,7 +472,6 @@
     
     
         videoEnded() {
-            this.paused = this.media.paused;
             this.setIcon(this.playIcon, 'fas fa-play');
         }
     
@@ -475,8 +484,8 @@
                 if(this.media.currentTime >= this.media.duration) {
                     this.media.currentTime = 0;
                 }
-                this.media.play();
-                this.paused = this.media.paused;
+
+                this.media.play();    
                 this.setIcon(this.playIcon, 'fas fa-pause');
                 this.playBtn.style.visibility = 'hidden';
                 this.playBtn.style.opacity = 0;
@@ -496,7 +505,6 @@
                 clearTimeout(this.timeout);
                 this.controls.style.opacity = 1;
                 this.controls.style.pointerEvents = 'all';
-                this.paused = this.media.paused;
                 this.setIcon(this.playIcon, 'fas fa-play');
                 this.setIcon(this.playBtnIcon, 'fas fa-play');
                 this.playBtn.style.visibility = 'visible';
@@ -604,9 +612,63 @@
             this.file.click();
             
         }
+
+
+        addVideoThroughURL() {
+              
+                
+            let videoSrc = window.prompt('Please Enter Video URL') || '';
+
+            let regex = /(.mp4|.webm|.m3u8)$/;
+
+            if(videoSrc !== '' && videoSrc.match(regex)) {
+                this.playBtn.style.opacity = 1;
+                this.playBtn.style.visibility = 'visible';
+                this.setIcon(this.playIcon, 'fas fa-play');
+            
+               
+
+                this.media.volume = this.currentVol;
+
+                videoSrc = videoSrc.trim();
+
+                    if(videoSrc.match(/.m3u8$/)) {
+                        // HLS
+                        if (Hls.isSupported()) {   
+                            this.hls = true;                
+                            let hls = new Hls();
+                            hls.loadSource(videoSrc);
+                            hls.attachMedia(this.media);
+                          }
+                    } else {
+                        this.media.src = videoSrc;
+                        this.media.load();
+                    }
+
+            } else {
+                this.error.style.opacity = 1;
+                this.error.style.visibility = 'visible';
+                this.error.textContent = 'Please Choose A Valid Video (MP4, WEBM or M3U8).';
+
+                if(this.errorTimeout) {
+                    clearInterval(this.errorTimeout);
+                }
+
+                this.errorTimeout = setTimeout(() => {
+                    this.error.style.opacity = 0;
+                    this.error.style.visibility = 'hidden';
+                }, 3000);
+
+                return;
+            }
+        }
+
         loadFile(e) {
             
             const file = e.target.files;
+
+         
+            
             if(!file.length) {
                 return;
             }
@@ -614,8 +676,13 @@
            if(file[0].type.indexOf('video/mp4') === -1 && file[0].type.indexOf('video/webm') === -1) {
                 this.error.style.opacity = 1;
                 this.error.style.visibility = 'visible';
+                this.error.textContent = 'Please Choose A Valid Video (MP4 or WEBM).';
 
-                setTimeout(() => {
+                if(this.errorTimeout) {
+                    clearInterval(this.errorTimeout);
+                }
+
+                this.errorTimeout = setTimeout(() => {
                     this.error.style.opacity = 0;
                     this.error.style.visibility = 'hidden';
                 }, 3000);
@@ -628,21 +695,18 @@
             this.error.style.opacity = 0;
             this.error.style.visibility = 'hidden';
 
-        
-    
-            this.playable = true;
-    
+           
             
             if(this.currentSrc !== '') {
                 URL.revokeObjectURL(this.currentSrc);
             }
-            
-          
 
+         
+                
             this.currentSrc = URL.createObjectURL(file[0]);
-            this.source.setAttribute('src', this.currentSrc);
-            this.source.setAttribute('type', file[0].type);
+            this.media.setAttribute('src', this.currentSrc);
             this.media.load();
+            
             
             
             this.setIcon(this.playIcon, 'fas fa-play');
