@@ -1,6 +1,6 @@
 # Video player
-Custom Video Player for watching videos from your PC on Web.\
-Supports MP4 and WEBM video and .vtt subtitles\
+Custom Video Player for watching videos from your PC or URL on Web.\
+Supports MP4 and WEBM and M3U8 video and .vtt subtitles\
 Implemented Custom Controls and Keyboard shortcuts.\
 Feel free to play with it :)
 
